@@ -9,7 +9,7 @@ router.post('/', cartsController.addCart)
 router.get('/', cartsController.getAllCarts);
 
 
-router.get('/:cid', )
+router.get('/:cid',cartsController.getCartById);
 
 
 router.post('/:cid/product/:pid', )
@@ -21,7 +21,7 @@ router.delete('/:cid/product/:pid', )
 router.put('/:cid/product/:pid', );
 
 
-router.delete('/:cid',)
+router.delete('/:cid', cartsController.deleteCart)
 
 
 
