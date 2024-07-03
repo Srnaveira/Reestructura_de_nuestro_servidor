@@ -1,4 +1,5 @@
 const cartsModel = require('../models/carts.model.js')
+const productModel = require('../models/products.model.js')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv');
 
@@ -30,7 +31,7 @@ module.exports = {
 
     getCartById: async (idCart) =>{
         try {
-            await cartsModel.findOne({_id: cartId}).populate('product.idP').lean();
+            return await cartsModel.findOne({_id: idCart }).populate('product.idP').lean();
         } catch (error) {
             console.error(`Error al Buscar el Cart: ${idCart}`);
             throw Error;            
@@ -50,26 +51,52 @@ module.exports = {
 
     addProductToCart: async (idCart, idProduct, quantity) =>{
         try {
-            await cartsModel.updateOne(
-                { _id: idCart }, 
-                { $push: { product: { idP: idProduct, quantity } } }
-            );
+            const cart = await cartsModel.findOne({ _id: idCart });
+    
+            if (!cart) {
+                throw new Error(`Carrito con id ${idCart} no encontrado`);
+            }
+            const productIndex = cart.product.findIndex((item) => item.idP.toString() === idProduct);
+    
+            if (productIndex !== -1) {
+                // Actualizar cantidad si el producto ya existe
+                cart.product[productIndex].quantity += quantity;
+            } else {
+                // Agregar nuevo producto si no existe
+                cart.product.push({ idP: idProduct, quantity });
+            }
+    
+            // Guardar los cambios en la base de datos
+            await cart.save();
         } catch (error) {
-            console.error(`Error al Actualizar el Contenido del Cart: ${idCart}`);
-            throw Error;                      
+            console.error("Error al actualizar el carrito:", error);
+            throw error;
         }
         
-    },   
-
+    },
+    
     deletProductToCart: async (idCart, idProduct) =>{
         try {
-            await cartsModel.updateOne(
-                {_id: idCart},
-                { $pull: { product: {idP: idProduct} } }
-            );
+            const cart = await cartsModel.findOne({ _id: idCart });
+    
+            if (!cart) {
+                throw new Error(`Carrito con id ${idCart} no encontrado`);
+            }
+    
+            const productIndex = cart.product.findIndex((item) => item.idP.toString() === idProduct);
+    
+            if (productIndex !== -1) {
+                // Eliminar el producto del carrito
+                cart.product.splice(productIndex, 1);
+    
+                // Guardar los cambios en la base de datos
+                await cart.save();
+            } else {
+                throw new Error(`Producto con id ${idProduct} no encontrado en el carrito`);
+            }
         } catch (error) {
             console.error(`Error al Eliminar el producto del Cart: ${idCart} indicado`);
-            throw Error;                                
+            throw Error;        
         }
     }
 

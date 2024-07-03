@@ -47,7 +47,6 @@ async function addProductToCart (idCart, idProduct, quantity) {
     }
 }
 
-
 async function deletProductToCart (idCart, idProduct) {
     try {
         await cartsData.deletProductToCart(idCart, idProduct);

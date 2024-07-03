@@ -27,7 +27,7 @@ async function getAllCarts (req, res) {
 
 async function getCartById (req, res) {
    try {
-        const idCart = req.params.cid;    
+        const idCart = req.params.cid;  
         const CartIsValid = await cartsServices.getCartById(idCart)
         if(CartIsValid){
             res.status(200).render('cart', CartIsValid);
@@ -39,7 +39,6 @@ async function getCartById (req, res) {
         res.status(500).json({message: "Error interno del servidor", error: error});
     }
 }
-
 
 
 async function deleteCart (req, res) {
@@ -62,48 +61,29 @@ async function addProductToCart (req, res) {
     try {
         const idCart = req.params.cid;
         const idProduct = req.params.pid;
-        const quantity = 1;
+        let quantity = 1;
         
-        const CartIsValid = await cartsServices.getCartById(idCart)
-        if(CartIsValid){
-            const productIsValid = CartIsValid.product.find((item) => item.idP === idProduct);
-            if(productIsValid){
-                quantity = productIsValid.quantity + quantity;
-                await cartsServices.deletProductToCart(idCart, idProduct);
-                await cartsServices.addProductToCart( idCart, idProduct, quantity);
-                res.status(200).json({message: "Producto agregado correctamente"})
-            } else {
-                await cartsServices.addProductToCart( idCart, idProduct, quantity);
-                res.status(200).json({message: "Producto agregado correctamente"})
-            }
-            
-        } else {
-        res.status(404).json({message: "carrito no encontrado"})      
-        }
+        await cartsServices.addProductToCart(idCart, idProduct, quantity);
+        res.status(200).json({ message: "Producto agregado o actualizado correctamente" });
     } catch (error) {
-        console.error("Hubo un problema al eliminar ese carrito", error)
-        res.status(404).json({message: "carrito no encontrado", error: error})      
-    }       
-}
-
+        console.error("Hubo un problema al agregar el producto al carrito", error);
+        res.status(500).json({ message: "Error interno del servidor", error });
+    }
+}      
 
 
 async function deletProductToCart (req, res) {
     try {
-       
+        const idCart = req.params.cid;
+        const idProduct = req.params.pid;
+
+        await cartsServices.deletProductToCart(idCart, idProduct);
+        res.status(200).json({ message: "Producto eliminado correctamente" });
     } catch (error) {
-       
-    }       
+        console.error("Hubo un problema al eliminar el producto del carrito", error);
+        res.status(500).json({ message: "Error interno del servidor", error });
+    }  
 }
-
-
-
-
-
-
-
-
-
 
 
 

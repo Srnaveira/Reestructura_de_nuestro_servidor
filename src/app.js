@@ -1,35 +1,33 @@
 const express = require("express");
 const dotenv = require('dotenv');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const { engine } = require('express-handlebars');
-
-//Routes
-const cartsRoutes = require('./routes/carts.router.js')
-
+// No necesitas importar utils.js
+// Routes
+const cartsRoutes = require('./routes/carts.router.js');
 
 dotenv.config();
-//inicializo App:
+
+// Inicializo App
 const app = express();
 
-
-//define el motor de pLanillas
+// Define el motor de plantillas
 app.engine('hbs', engine({
     extname: '.hbs',
     defaultLayout: 'main',
 }));
 
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.set('view engine', 'hbs');
+app.set('views', __dirname + '/views'); 
+app.use(express.static(__dirname + '/public')); 
 
-
-//EndPoints
-
+// EndPoints
 app.use('/api/carts/', cartsRoutes);
 
-
-app.listen(process.env.PORT, () =>{
-    console.log(`Aplicacion funcionando en el port: ${process.env.PORT}`)
-
+app.listen(process.env.PORT, () => {
+    console.log(`Aplicación funcionando en el puerto: ${process.env.PORT}`);
 })
