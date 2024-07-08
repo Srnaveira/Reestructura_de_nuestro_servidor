@@ -13,7 +13,6 @@ async function addCart (req, res) {
     }
 }
 
-
 async function getAllCarts (req, res) {
     try {
        const carts = await cartsServices.getAllCarts()
@@ -23,7 +22,6 @@ async function getAllCarts (req, res) {
         res.status(500).json({message: "Error interno del servidor", error: error});       
     }       
 }
-
 
 async function getCartById (req, res) {
    try {
@@ -40,7 +38,6 @@ async function getCartById (req, res) {
     }
 }
 
-
 async function deleteCart (req, res) {
     try {
         const idCart = req.params.cid;
@@ -56,7 +53,6 @@ async function deleteCart (req, res) {
     }       
 }
 
-
 async function addProductToCart (req, res) {
     try {
         const idCart = req.params.cid;
@@ -71,7 +67,6 @@ async function addProductToCart (req, res) {
     }
 }      
 
-
 async function deletProductToCart (req, res) {
     try {
         const idCart = req.params.cid;
@@ -84,8 +79,6 @@ async function deletProductToCart (req, res) {
         res.status(500).json({ message: "Error interno del servidor", error });
     }  
 }
-
-
 
 module.exports = {
     addCart,

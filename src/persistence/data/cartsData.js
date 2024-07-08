@@ -1,13 +1,5 @@
 const cartsModel = require('../models/carts.model.js')
 const productModel = require('../models/products.model.js')
-const mongoose = require('mongoose')
-const dotenv = require('dotenv');
-
-dotenv.config();
-
-mongoose.connect(process.env.MONGO_URL)
-    .then(() =>{ console.log("Conexion sucefull")})
-    .catch((error) => {console.error("Error en conexion con la BD", error)})
 
 
 module.exports = {

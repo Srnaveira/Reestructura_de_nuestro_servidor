@@ -1,22 +1,15 @@
-import { Router } from 'express';
-import { isAuthenticated, isNotAuthenticated } from '../middleware/auth.js';
+const  express = require('express');
+const usersRenderController = require('../controllers/usersRenderController.js')
+const { isAuthenticated, isNotAuthenticated } = require ('../middleware/auth.js');
 
-const router = Router();
+const router = express.Router();
 
-router.get('/login', isNotAuthenticated, (req, res) => {
-    res.render('login');
-});
+router.get('/login', isNotAuthenticated, usersRenderController.renderLogin);
 
-router.get('/register', isNotAuthenticated, (req, res) => {
-    res.render('register');
-});
+router.get('/register', isNotAuthenticated, usersRenderController.renderRegister);
 
-router.get('/profile', isAuthenticated, (req, res) => {
-    res.render('profile', { user: req.session.user });
-});
+router.get('/profile', isAuthenticated, usersRenderController.renderProfile);
 
-router.get('/user', (req, res) => {
-    res.json(req.session.user || null);
-});
+router.get('/user', usersRenderController.renderUser);
 
-export default router;
+module.exports = router;

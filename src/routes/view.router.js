@@ -1,28 +1,19 @@
-import { Router } from 'express';
-import { __dirname } from "../utils.js"
-import ProductManager from '../dao/products.manager.js';
-import express from 'express';
-import usersModel from '../models/users.model.js';
+const express = require('express');
+const productsController = require('../controllers/productsController.js'); // Asegúrate de que la ruta del archivo es correcta
 
 const router = express.Router();
 
-const pManager = new ProductManager();
-
-
-router.get('/', async (req, res) => {
-    const listProducts = await pManager.getProducts();
-    console.log({listProducts})
-    res.render('home', {listProducts}) 
+router.get('/realtimeproducts',  (req, res) => {
+    try {
+        res.status(200).render('realtimeproducts', {
+            user: res.locals.user,
+            isAdmin: res.locals.user && res.locals.user.rol === "admin",  
+        });
+    } catch (error) {
+        console.error("Error al renderizar realtimeproducts", error);
+        res.status(500).json({message: "Error interno del servidor", error: error.message});
+    }
 });
 
 
-router.get('/realtimeproducts', (req, res) => {
-    res.render('realtimeproducts', {
-        user: res.locals.user,
-        isAdmin: res.locals.user && res.locals.user.rol === "admin",  
-    });
-
-});
-
-
-export default router;
+module.exports = router;
